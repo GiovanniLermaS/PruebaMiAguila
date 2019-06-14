@@ -101,9 +101,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             val startLongitude = start[0]
             val endLatitude = end[1]
             val endLongitude = end[0]
-            if (startLatitude >= 6.0 && startLatitude < 7.0 &&
-                endLatitude >= 6.0 && endLatitude < 7.0 &&
-                startLongitude <= -75.0 && endLongitude <= -75.0
+            if (startLatitude >= 4.0 && startLatitude < 5 &&
+                endLatitude >= 4.0 && endLatitude < 5 &&
+                startLongitude <= -74.0 && endLongitude <= -74.0
             ) arrayCity.add(trip)
         }
     }
