@@ -6,4 +6,7 @@
     <string name="error_gps">Servicios de ubicación desactivados</string>
     <string name="no_gps">Habilite los servicios de ubicación</string>
     <string name="habilitar">HABILITAR</string>
+    <string name="summaryRoute">Resumen de mi ruta</string>
+    <string name="routeActive">*La ruta está activa solo de lunes a viernes.</string>
+    <string name="next">Continuar</string>
 </resources>
