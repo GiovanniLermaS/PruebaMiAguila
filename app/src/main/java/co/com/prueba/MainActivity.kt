@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import co.com.appmovil.Broadcast.GpsReceiver
 import co.com.prueba.Model.Trips
 import com.google.android.gms.common.ConnectionResult
@@ -43,7 +44,8 @@ import java.text.DecimalFormat
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, LocationListener, SensorEventListener, View.OnClickListener {
+    GoogleApiClient.OnConnectionFailedListener, LocationListener, SensorEventListener, View.OnClickListener,
+    GpsReceiver.GpsReceiverListener {
 
     var arrayCity = ArrayList<Trips>()
 
@@ -386,6 +388,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
+        checkGps()
         mGoogleMap = googleMap
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -394,10 +397,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         ) {
             mGoogleMap?.isMyLocationEnabled = true
             buildGoogleApiClient()
-        }
-        checkGps()
-        mGoogleMap?.setOnMapLoadedCallback {
-            addPoints()
         }
     }
 
@@ -429,6 +428,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             if (mGoogleApiClient != null) {
                 LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
             }
+            if (GpsReceiver().isEnabled()) {
+                mGoogleMap?.setOnMapLoadedCallback {
+                    addPoints()
+                }
+            }
         }
+    }
+
+    override fun onGpsConnectionChanged(isEnabled: Boolean) {
+        if (!isEnabled) {
+            Toast.makeText(this, "no gps", Toast.LENGTH_LONG).show()
+            alertDialogBuilder = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+            alertDialogBuilder!!.setTitle(getString(R.string.error_gps))
+            alertDialogBuilder!!.setMessage(getString(R.string.no_gps))
+            alertDialogBuilder!!.setCancelable(false)
+            alertDialogBuilder!!.setPositiveButton(getString(R.string.habilitar)) { _, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+            alertDialog = alertDialogBuilder!!.create()
+            alertDialog!!.show()
+        } else alertDialog!!.dismiss()
     }
 }
